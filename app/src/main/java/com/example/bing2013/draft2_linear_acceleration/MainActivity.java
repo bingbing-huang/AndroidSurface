@@ -44,7 +44,6 @@ public class MainActivity extends AppCompatActivity implements OnClickListener {
     // Storage Permissions
     private static final int REQUEST_EXTERNAL_STORAGE = 1;
     private static String[] PERMISSIONS_STORAGE = {
-            Manifest.permission.READ_EXTERNAL_STORAGE,
             Manifest.permission.WRITE_EXTERNAL_STORAGE
     };
 
@@ -79,6 +78,7 @@ public class MainActivity extends AppCompatActivity implements OnClickListener {
     List<String[]> gpsData;
     List<String[]> networkData;
 
+    // Instance variables created for calculation inside of onSensorChanged
     long initialTime;
     long preTime;
     float[] preXyz;
@@ -139,6 +139,7 @@ public class MainActivity extends AppCompatActivity implements OnClickListener {
         // Acquire a reference to the system Sensor Manager
         sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
 
+        // Initialize variables
         initialTime = 0L;
         preTime = 0L;
         preXyz = new float[3];
@@ -160,6 +161,7 @@ public class MainActivity extends AppCompatActivity implements OnClickListener {
                 // the time interval between current time and previous time
                 long dt = 0L;
 
+                // Calculate the current time, and time interval
                 if (initialTime == 0) {
                     initialTime = systemCurrentTime;
                 } else {
@@ -170,6 +172,7 @@ public class MainActivity extends AppCompatActivity implements OnClickListener {
 
                 float dtFloat = (float) dt / (float) 1000;
 
+                // Reformat acceleration in X, Y, and Z from m/s^2 to mm/s^2
                 float[] xyz = new float[3];
                 for (int i = 0; i < 3; i++) {
                     xyz[i] = event.values[i] * 1000;
@@ -183,6 +186,7 @@ public class MainActivity extends AppCompatActivity implements OnClickListener {
 
                 int projectedBump = 0;
 
+                // Calculate dx/dt, dy/dt, and dz/dt
                 if (preXyz[2] != 0.0) {
 
                     for (int i = 0; i < 3; i++) {
@@ -191,6 +195,7 @@ public class MainActivity extends AppCompatActivity implements OnClickListener {
                 }
                 preXyz = xyz;
 
+                // Calculate dx, dy, and dz
                 if (preDxyzDivDt[2] != 0.0) {
 
                     for (int i = 0; i < 3; i++) {
@@ -199,6 +204,7 @@ public class MainActivity extends AppCompatActivity implements OnClickListener {
                 }
                 preDxyzDivDt = dxyzDivDt;
 
+                // Calculate xpos, ypos, and zpos
                 if (dxyz[2] != 0.0) {
 
                     for (int i = 0; i < 3; i++) {
@@ -207,10 +213,12 @@ public class MainActivity extends AppCompatActivity implements OnClickListener {
                 }
                 preXyzPos = xyzPos;
 
+                // Define the projected bump
                 if (Math.abs(Math.round(dxyz[0])) > 150000) {
                     projectedBump = 400000;
                 }
 
+                // Reformat the result
                 String sX = String.format(Locale.US, "%.3f", xyz[0]);
                 String sY = String.format(Locale.US, "%.3f", xyz[1]);
                 String sZ = String.format(Locale.US, "%.3f", xyz[2]);
@@ -227,6 +235,7 @@ public class MainActivity extends AppCompatActivity implements OnClickListener {
                 String syPos = String.format(Locale.US, "%.3f", xyzPos[1]);
                 String szPos = String.format(Locale.US, "%.3f", xyzPos[2]);
 
+                // Save the data into ArrayList
                 linearData.add(new String[]{Double.toString(((double) currentTime) / 1000.0),
                         sX, sY, sZ, " ",
                         sDxDivDt, sDyDivDt, sDzDivDt, " ",
@@ -234,6 +243,7 @@ public class MainActivity extends AppCompatActivity implements OnClickListener {
                         sxPos, syPos, szPos, " ",
                         Integer.toString(0), Integer.toString(projectedBump)});
 
+                // Display acceleration into screen
                 xText.setText("X: " + sX + "mm/s^2");
                 yText.setText("Y: " + sY + "mm/s^2");
                 zText.setText("Z: " + sZ + "mm/s^2");
@@ -435,10 +445,7 @@ public class MainActivity extends AppCompatActivity implements OnClickListener {
         // Get the state of the external storage of the device
         String state = Environment.getExternalStorageState();
         // If the returned state is equal to MEDIA_MOUNTED, then you can read and write your files.
-        if (Environment.MEDIA_MOUNTED.equals(state)) {
-            return true;
-        }
-        return false;
+        return Environment.MEDIA_MOUNTED.equals(state);
     }
 
     // Save the file into external storage as public files
