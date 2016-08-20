@@ -1,0 +1,15 @@
+<resources>
+    <string name="app_name">Draft2_Linear_Acceleration</string>
+    <string name="action_settings">Settings</string>
+    <string name="x">X</string>
+    <string name="y">Y</string>
+    <string name="z">Z</string>
+    <string name="start">Start</string>
+    <string name="stop">Stop</string>
+    <string name="inside">inside</string>
+    <string name="outside">outside</string>
+    <string name="findbump">findBump!</string>
+    <string name="gps_amp_network"><![CDATA[gps&network]]></string>
+    <string name="gps">GPS</string>
+    <string name="save">Save</string>
+</resources>
