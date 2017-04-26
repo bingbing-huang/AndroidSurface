@@ -30,9 +30,13 @@ import java.util.Locale;
 
 import android.view.View.OnClickListener;
 
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.FusedLocationProviderApi;
+import com.google.android.gms.location.LocationServices;
 import com.opencsv.CSVWriter;
 
-public class MainActivity extends AppCompatActivity implements OnClickListener {
+public class MainActivity extends AppCompatActivity implements OnClickListener, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
 
     // The textview is for displaying vectors in Device Coordinate and World Coordinate.
     private TextView xText, yText, zText;
@@ -65,7 +69,7 @@ public class MainActivity extends AppCompatActivity implements OnClickListener {
     private String networkProvider;
 
     // The button controls when the program stop saving data to csv file
-    private Button startButton, stopButton, bumpButton, gpsNetButton, gpsButton, saveButton;
+    private Button startButton, stopButton, bumpButton, gpsNetButton, gpsButton, saveButton, button2;
 
     // Animation for pressing the bump button
     Animation myAnim;
@@ -77,6 +81,8 @@ public class MainActivity extends AppCompatActivity implements OnClickListener {
     List<String[]> linearData;
     List<String[]> gpsData;
     List<String[]> networkData;
+    List<String[]> bumpData;
+    List<String[]> button2Data;
 
     // Instance variables created for calculation inside of onSensorChanged
     long initialTime;
@@ -84,6 +90,25 @@ public class MainActivity extends AppCompatActivity implements OnClickListener {
     float[] preXyz;
     float[] preDxyzDivDt;
     float[] preXyzPos;
+
+    GoogleApiClient mGoogleApiClient;
+    Location mLastLocation;
+
+    @Override
+    public void onConnected(Bundle connectionHint) {
+        mLastLocation = LocationServices.FusedLocationApi.getLastLocation(
+                mGoogleApiClient);
+    }
+
+    @Override
+    public void onConnectionSuspended(int i) {
+        //TODO
+    }
+
+    @Override
+    public void onConnectionFailed(ConnectionResult connectionResult) {
+        //TODO
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -98,6 +123,18 @@ public class MainActivity extends AppCompatActivity implements OnClickListener {
         // If it does not have permission, it will go ahead request one.
         verifyLocationPermissions(this);
 
+        // Create an instance of GoogleAPIClient.
+        if (mGoogleApiClient == null) {
+            mGoogleApiClient = new GoogleApiClient.Builder(this)
+                    .addConnectionCallbacks(this)
+                    .addOnConnectionFailedListener(this)
+                    .addApi(LocationServices.API)
+                    .build();
+        }
+        if (mGoogleApiClient != null) {
+            mGoogleApiClient.connect();
+        }
+
         // Initialize Textviews
         xText = (TextView) findViewById(R.id.xText);
         yText = (TextView) findViewById(R.id.yText);
@@ -107,6 +144,8 @@ public class MainActivity extends AppCompatActivity implements OnClickListener {
         linearData = new ArrayList<>();
         gpsData = new ArrayList<>();
         networkData = new ArrayList<>();
+        bumpData = new ArrayList<>();
+        button2Data = new ArrayList<>();
 
         // Initialize the stop button
         startButton = (Button) findViewById(R.id.startButton);
@@ -115,6 +154,7 @@ public class MainActivity extends AppCompatActivity implements OnClickListener {
         gpsNetButton = (Button) findViewById(R.id.gpsNetButton);
         gpsButton = (Button) findViewById(R.id.gpsButton);
         saveButton = (Button) findViewById(R.id.saveButton);
+        button2 = (Button) findViewById(R.id.button2);
 
         // Set buttons' listener
         startButton.setOnClickListener(this);
@@ -123,6 +163,7 @@ public class MainActivity extends AppCompatActivity implements OnClickListener {
         gpsNetButton.setOnClickListener(this);
         gpsButton.setOnClickListener(this);
         saveButton.setOnClickListener(this);
+        button2.setOnClickListener(this);
 
         // Set the enabled state of this view.
         // In the beginning, we would like user to choose the environment, then start recording.
@@ -132,6 +173,7 @@ public class MainActivity extends AppCompatActivity implements OnClickListener {
         gpsNetButton.setEnabled(true);
         gpsButton.setEnabled(true);
         saveButton.setEnabled(false);
+        button2.setEnabled(false);
 
         // Animation for pressing the bump button
         myAnim = AnimationUtils.loadAnimation(this, R.anim.milkshake);
@@ -264,7 +306,7 @@ public class MainActivity extends AppCompatActivity implements OnClickListener {
             public void onLocationChanged(Location location) {
 
                 // Called when a new location is found by the network location provider or GPS.
-                String time = Double.toString((double)(location.getTime() - initialTime) / 1000.0);
+                String time = Double.toString((double) (location.getTime() - initialTime) / 1000.0);
                 String latitude = Double.toString(location.getLatitude());
                 String longitude = Double.toString(location.getLongitude());
                 String accuracy = String.format(Locale.US, "%.0f", location.getAccuracy() * 100);
@@ -334,6 +376,7 @@ public class MainActivity extends AppCompatActivity implements OnClickListener {
                 startButton.setEnabled(false);
                 stopButton.setEnabled(true);
                 bumpButton.setEnabled(true);
+                button2.setEnabled(true);
                 saveButton.setEnabled(true);
 
                 // Active the sensors
@@ -369,6 +412,7 @@ public class MainActivity extends AppCompatActivity implements OnClickListener {
                 gpsButton.setEnabled(true);
                 stopButton.setEnabled(false);
                 bumpButton.setEnabled(false);
+                button2.setEnabled(false);
                 saveButton.setEnabled(false);
 
                 // Make sensor stop recording data
@@ -381,14 +425,24 @@ public class MainActivity extends AppCompatActivity implements OnClickListener {
                 linearData.clear();
                 gpsData.clear();
                 networkData.clear();
+                bumpData.clear();
+                button2Data.clear();
+
+                mGoogleApiClient.disconnect();
 
                 break;
 
             case R.id.bumpButton:
                 // If you hit findBump, it will record the time
                 v.startAnimation(myAnim);
-                linearData.add(new String[]{Double.toString(((double) (System.currentTimeMillis() - initialTime)) / 1000.0),
-                        " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", "300000"});
+                bumpData.add(new String[]{Double.toString(((double) (System.currentTimeMillis() - initialTime)) / 1000.0), "Bump!", String.valueOf(mLastLocation.getLatitude()),
+                        String.valueOf(mLastLocation.getLongitude()), String.valueOf(mLastLocation.getAccuracy()), String.valueOf(mLastLocation.getProvider())});
+                break;
+
+            case R.id.button2:
+                v.startAnimation(myAnim);
+                button2Data.add(new String[]{Double.toString(((double) (System.currentTimeMillis() - initialTime)) / 1000.0), "Button2!", String.valueOf(mLastLocation.getLatitude()),
+                        String.valueOf(mLastLocation.getLongitude()), String.valueOf(mLastLocation.getAccuracy()), String.valueOf(mLastLocation.getProvider())});
                 break;
 
             case R.id.saveButton:
@@ -402,11 +456,18 @@ public class MainActivity extends AppCompatActivity implements OnClickListener {
 
                     String gpsFileName = "gps" + Integer.toString(locationCounter) + ".csv";
 
+                    String bumpButtonFileName = "bump" + Integer.toString(locationCounter) + ".csv";
+                    String button2FileName = "button2_ " + Integer.toString(locationCounter) + ".csv";
+
                     File linearCsvFile = getFileDir(linearFileName);
                     File gpsCsvFile = getFileDir(gpsFileName);
+                    File bumpButtonFile = getFileDir(bumpButtonFileName);
+                    File button2File = getFileDir(button2FileName);
 
                     CSVWriter linearWriter = new CSVWriter(new FileWriter(linearCsvFile));
                     CSVWriter gpsWriter = new CSVWriter(new FileWriter(gpsCsvFile));
+                    CSVWriter bumpWriter = new CSVWriter(new FileWriter(bumpButtonFile));
+                    CSVWriter button2Writer = new CSVWriter(new FileWriter(button2File));
 
                     linearWriter.writeAll(linearData);
                     linearWriter.close();
@@ -414,8 +475,16 @@ public class MainActivity extends AppCompatActivity implements OnClickListener {
                     gpsWriter.writeAll(gpsData);
                     gpsWriter.close();
 
+                    bumpWriter.writeAll(bumpData);
+                    bumpWriter.close();
+
+                    button2Writer.writeAll(button2Data);
+                    button2Writer.close();
+
                     linearData.clear();
                     gpsData.clear();
+                    bumpData.clear();
+                    button2Data.clear();
 
                     if (networkProvider != null) {
 

@@ -65,16 +65,17 @@
         android:layout_alignEnd="@+id/bumpButton" />
 
     <Button
+        android:id="@+id/bumpButton"
         android:layout_width="300dp"
         android:layout_height="300dp"
-        android:text="@string/findbump"
-        android:id="@+id/bumpButton"
-        android:background="#4DFFFE"
-        android:textStyle="bold"
-        android:textSize="50sp"
-        android:layout_below="@+id/startButton"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/startButton"
+        android:layout_toStartOf="@+id/saveButton"
+        android:background="#4DFFFE"
+        android:text="@string/findbump"
+        android:textSize="36sp"
+        android:textStyle="bold" />
 
     <Button
         android:layout_width="wrap_content"
@@ -91,9 +92,10 @@
         android:layout_height="wrap_content"
         android:text="@string/gps"
         android:id="@+id/gpsButton"
-        android:layout_alignTop="@+id/gpsNetButton"
-        android:layout_alignRight="@+id/stopButton"
-        android:layout_alignEnd="@+id/stopButton" />
+        android:layout_alignBaseline="@+id/gpsNetButton"
+        android:layout_alignBottom="@+id/gpsNetButton"
+        android:layout_toRightOf="@+id/stopButton"
+        android:layout_toEndOf="@+id/stopButton" />
 
     <Button
         android:layout_width="wrap_content"
@@ -103,5 +105,17 @@
         android:layout_above="@+id/bumpButton"
         android:layout_toRightOf="@+id/gpsNetButton"
         android:layout_toEndOf="@+id/gpsNetButton" />
+
+    <Button
+        android:id="@+id/button2"
+        android:layout_width="150dp"
+        android:layout_height="300dp"
+        android:layout_below="@+id/stopButton"
+        android:layout_toEndOf="@+id/bumpButton"
+        android:layout_toRightOf="@+id/bumpButton"
+        android:background="#FF5079"
+        android:text="Button2!"
+        android:textSize="36sp"
+        tools:text="Button2!" />
 
 </RelativeLayout>
