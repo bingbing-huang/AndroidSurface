@@ -439,13 +439,13 @@ public class MainActivity extends AppCompatActivity implements OnClickListener, 
             case R.id.bumpButton:
                 // If you hit findBump, it will record the time
                 v.startAnimation(myAnim);
-                bumpData.add(new String[]{Double.toString(((double) (System.currentTimeMillis() - initialTime)) / 1000.0), "Bump!", String.valueOf(mLastLocation.getLatitude()),
+                bumpData.add(new String[]{Double.toString(((double) (System.currentTimeMillis() - initialTime)) / 1000.0), "crub_cut", String.valueOf(mLastLocation.getLatitude()),
                         String.valueOf(mLastLocation.getLongitude()), String.valueOf(mLastLocation.getAccuracy()), String.valueOf(mLastLocation.getProvider())});
                 break;
 
             case R.id.button2:
                 v.startAnimation(myAnim);
-                button2Data.add(new String[]{Double.toString(((double) (System.currentTimeMillis() - initialTime)) / 1000.0), "Button2!", String.valueOf(mLastLocation.getLatitude()),
+                button2Data.add(new String[]{Double.toString(((double) (System.currentTimeMillis() - initialTime)) / 1000.0), "crossing", String.valueOf(mLastLocation.getLatitude()),
                         String.valueOf(mLastLocation.getLongitude()), String.valueOf(mLastLocation.getAccuracy()), String.valueOf(mLastLocation.getProvider())});
                 break;
 
@@ -460,8 +460,8 @@ public class MainActivity extends AppCompatActivity implements OnClickListener, 
 
                     String gpsFileName = "gps" + Integer.toString(locationCounter) + ".csv";
 
-                    String bumpButtonFileName = "bump" + Integer.toString(locationCounter) + ".csv";
-                    String button2FileName = "button2_ " + Integer.toString(locationCounter) + ".csv";
+                    String bumpButtonFileName = "curb_cut" + Integer.toString(locationCounter) + ".csv";
+                    String button2FileName = "crossing" + Integer.toString(locationCounter) + ".csv";
 
                     File linearCsvFile = getFileDir(linearFileName);
                     File gpsCsvFile = getFileDir(gpsFileName);
