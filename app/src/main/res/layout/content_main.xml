@@ -73,7 +73,7 @@
         android:layout_below="@+id/startButton"
         android:layout_toStartOf="@+id/saveButton"
         android:background="#4DFFFE"
-        android:text="@string/findbump"
+        android:text="@string/crubCut"
         android:textSize="36sp"
         android:textStyle="bold" />
 
@@ -111,11 +111,10 @@
         android:layout_width="150dp"
         android:layout_height="300dp"
         android:layout_below="@+id/stopButton"
-        android:layout_toEndOf="@+id/bumpButton"
         android:layout_toRightOf="@+id/bumpButton"
         android:background="#FF5079"
-        android:text="Button2!"
+        android:text="@string/crossing"
         android:textSize="36sp"
-        tools:text="Button2!" />
+        android:textStyle="bold" />
 
 </RelativeLayout>

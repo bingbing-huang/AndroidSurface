@@ -220,70 +220,74 @@ public class MainActivity extends AppCompatActivity implements OnClickListener, 
                     xyz[i] = event.values[i] * 1000;
                 }
 
-                float[] dxyzDivDt = new float[3];
-
-                float[] dxyz = new float[3];
-
-                float[] xyzPos = new float[3];
-
-                int projectedBump = 0;
-
-                // Calculate dx/dt, dy/dt, and dz/dt
-                if (preXyz[2] != 0.0) {
-
-                    for (int i = 0; i < 3; i++) {
-                        dxyzDivDt[i] = (preXyz[i] - xyz[i]) / dtFloat;
-                    }
-                }
-                preXyz = xyz;
-
-                // Calculate dx, dy, and dz
-                if (preDxyzDivDt[2] != 0.0) {
-
-                    for (int i = 0; i < 3; i++) {
-                        dxyz[i] = (preDxyzDivDt[i] - dxyzDivDt[i]) / dtFloat;
-                    }
-                }
-                preDxyzDivDt = dxyzDivDt;
-
-                // Calculate xpos, ypos, and zpos
-                if (dxyz[2] != 0.0) {
-
-                    for (int i = 0; i < 3; i++) {
-                        xyzPos[i] = preXyzPos[i] - (dxyz[i] / ((float) 1000));
-                    }
-                }
-                preXyzPos = xyzPos;
-
-                // Define the projected bump
-                if (Math.abs(Math.round(dxyz[0])) > 150000) {
-                    projectedBump = 400000;
-                }
+//                float[] dxyzDivDt = new float[3];
+//
+//                float[] dxyz = new float[3];
+//
+//                float[] xyzPos = new float[3];
+//
+//                int projectedBump = 0;
+//
+//                // Calculate dx/dt, dy/dt, and dz/dt
+//                if (preXyz[2] != 0.0) {
+//
+//                    for (int i = 0; i < 3; i++) {
+//                        dxyzDivDt[i] = (preXyz[i] - xyz[i]) / dtFloat;
+//                    }
+//                }
+//                preXyz = xyz;
+//
+//                // Calculate dx, dy, and dz
+//                if (preDxyzDivDt[2] != 0.0) {
+//
+//                    for (int i = 0; i < 3; i++) {
+//                        dxyz[i] = (preDxyzDivDt[i] - dxyzDivDt[i]) / dtFloat;
+//                    }
+//                }
+//                preDxyzDivDt = dxyzDivDt;
+//
+//                // Calculate xpos, ypos, and zpos
+//                if (dxyz[2] != 0.0) {
+//
+//                    for (int i = 0; i < 3; i++) {
+//                        xyzPos[i] = preXyzPos[i] - (dxyz[i] / ((float) 1000));
+//                    }
+//                }
+//                preXyzPos = xyzPos;
+//
+//                // Define the projected bump
+//                if (Math.abs(Math.round(dxyz[0])) > 150000) {
+//                    projectedBump = 400000;
+//                }
 
                 // Reformat the result
                 String sX = String.format(Locale.US, "%.3f", xyz[0]);
                 String sY = String.format(Locale.US, "%.3f", xyz[1]);
                 String sZ = String.format(Locale.US, "%.3f", xyz[2]);
 
-                String sDxDivDt = String.format(Locale.US, "%.3f", dxyzDivDt[0]);
-                String sDyDivDt = String.format(Locale.US, "%.3f", dxyzDivDt[1]);
-                String sDzDivDt = String.format(Locale.US, "%.3f", dxyzDivDt[2]);
+//                String sDxDivDt = String.format(Locale.US, "%.3f", dxyzDivDt[0]);
+//                String sDyDivDt = String.format(Locale.US, "%.3f", dxyzDivDt[1]);
+//                String sDzDivDt = String.format(Locale.US, "%.3f", dxyzDivDt[2]);
+//
+//                String sdx = String.format(Locale.US, "%.3f", dxyz[0]);
+//                String sdy = String.format(Locale.US, "%.3f", dxyz[1]);
+//                String sdz = String.format(Locale.US, "%.3f", dxyz[2]);
+//
+//                String sxPos = String.format(Locale.US, "%.3f", xyzPos[0]);
+//                String syPos = String.format(Locale.US, "%.3f", xyzPos[1]);
+//                String szPos = String.format(Locale.US, "%.3f", xyzPos[2]);
 
-                String sdx = String.format(Locale.US, "%.3f", dxyz[0]);
-                String sdy = String.format(Locale.US, "%.3f", dxyz[1]);
-                String sdz = String.format(Locale.US, "%.3f", dxyz[2]);
-
-                String sxPos = String.format(Locale.US, "%.3f", xyzPos[0]);
-                String syPos = String.format(Locale.US, "%.3f", xyzPos[1]);
-                String szPos = String.format(Locale.US, "%.3f", xyzPos[2]);
+//                // Save the data into ArrayList
+//                linearData.add(new String[]{Double.toString(((double) currentTime) / 1000.0),
+//                        sX, sY, sZ, " ",
+//                        sDxDivDt, sDyDivDt, sDzDivDt, " ",
+//                        sdx, sdy, sdz, " ",
+//                        sxPos, syPos, szPos, " ",
+//                        Integer.toString(0), Integer.toString(projectedBump)});
 
                 // Save the data into ArrayList
                 linearData.add(new String[]{Double.toString(((double) currentTime) / 1000.0),
-                        sX, sY, sZ, " ",
-                        sDxDivDt, sDyDivDt, sDzDivDt, " ",
-                        sdx, sdy, sdz, " ",
-                        sxPos, syPos, szPos, " ",
-                        Integer.toString(0), Integer.toString(projectedBump)});
+                        sX, sY, sZ});
 
                 // Display acceleration into screen
                 xText.setText("X: " + sX + "mm/s^2");
